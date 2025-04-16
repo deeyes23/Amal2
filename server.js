@@ -8,9 +8,19 @@ import path from 'path';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import Stripe from 'stripe';
+import rateLimit from 'express-rate-limit';
 
 // Load environment variables
 dotenv.config();
+
+// Set up rate limiter: maximum of 100 requests per 15 minutes
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // max 100 requests per windowMs
+});
+
+// Apply rate limiter to all requests
+app.use(limiter);
 
 // ES module compatibility for __dirname
 const __filename = fileURLToPath(import.meta.url);
